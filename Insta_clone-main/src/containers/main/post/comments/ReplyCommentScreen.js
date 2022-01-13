@@ -17,24 +17,24 @@ export default function ReplyCommentScreen(props) {
     const [emptyReplies, setEmptyReplies] = useState(false)
     const [postButton, setPostButton] = useState(true)
 
-    const replyOnComment = async () => {
+    // const replyOnComment = async () => {
 
-        const token = await AsyncStorage.getItem('TOKEN')
-        await fetch(`http://188.166.189.237:3001/api/v1/comment/reply/${commentId}`, {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                reply
-            })
-        }).then(res => res.json())
-            .then((response) => {
-                console.log(response)
-            })
-    }
+    //     const token = await AsyncStorage.getItem('TOKEN')
+    //     await fetch(`http://188.166.189.237:3001/api/v1/comment/reply/${commentId}`, {
+    //         method: "POST",
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${token}`
+    //         },
+    //         body: JSON.stringify({
+    //             reply
+    //         })
+    //     }).then(res => res.json())
+    //         .then((response) => {
+    //             console.log(response)
+    //         })
+    // }
 
     const viewReplies = async () => {
         setLoading(true)
@@ -105,7 +105,7 @@ export default function ReplyCommentScreen(props) {
                         />
 
                 }
-                <AddReply commentId={commentId} />
+                <AddReply viewReplies={viewReplies} commentId={commentId} />
             </View>
         )
     }

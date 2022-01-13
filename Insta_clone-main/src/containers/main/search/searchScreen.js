@@ -4,6 +4,7 @@ import SearchGrid from './SearchGrid';
 import SearchTopTags from './SearchTopTags';
 import colors from '../../../res/colors';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function searchScreen() {
   const [text, setText] = useState('');
@@ -13,12 +14,19 @@ export default function searchScreen() {
   useEffect(() => {
     async function getData() {
       const api = 'http://188.166.189.237:3001/api/v1/profile/';
-
-      await fetch(api + text)
+      const token = await AsyncStorage.getItem("TOKEN")
+      await fetch(api + text, {
+        method: "GET",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      })
         .then((response) => response.json())
         .then((responseJson) => {
           setDataSource(responseJson.data)
-          console.log("Search Data", dataSource);
+          // console.log("Search Data", responseJson);
         })
         .catch((error) => {
           console.log("Seach error", error);
@@ -55,12 +63,14 @@ export default function searchScreen() {
           </View>
         ) : (
           <TouchableOpacity onPress={() => navigation.navigate("SearchedUser", {
+            id: dataSource.id,
             UserName: dataSource.username,
             Name: dataSource.name,
             ImageUrl: dataSource.profilePhotoUrl,
             Posts: dataSource.posts,
             Followers: dataSource.followers,
-            Followings: dataSource.following
+            Followings: dataSource.following,
+            didFollow: dataSource.didFollow
           })}
             style={{ justifyContent: "center", alignItems: "center" }}>
             <View style={{

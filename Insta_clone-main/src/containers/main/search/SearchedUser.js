@@ -1,15 +1,70 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList } from 'react-native';
 import ConstantStories from '../profile/ConstantStories';
 import LineSeperator from '../profile/LineSeperator';
 import GridIcon from '../profile/gridIcon';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import colors from '../../../res/colors';
 
 const data = [
     { key: "1" }
 ]
 
 function SearchedUser({ route, navigation }) {
+
+    console.log("props on searched user", route.params.id)
+    let id = route.params.id
+    let didFollow = route.params.didFollow
+    let followingLength = Object.keys(route.params.Followings).length
+
+
+    const [followingCount, setFollowingCount] = React.useState(followingLength)
+
+    const increase = () => {
+        if (!followButton) {
+            return setFollowingCount(followingCount + 1)
+        } else if (followButton) {
+            return setFollowingCount(followingCount - 1)
+        }
+    }
+
+
+    const follow = async () => {
+        const token = await AsyncStorage.getItem("TOKEN")
+
+        if (didFollow === false) {
+            await fetch("http://188.166.189.237:3001/api/v1/profile/follow", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    id
+                })
+            }).then(res => res.json())
+                .then((response) => {
+                    console.log("follow response", response)
+                })
+        } else {
+            await fetch("http://188.166.189.237:3001/api/v1/profile/unfollow", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    id
+                })
+            }).then(res => res.json())
+                .then((response) => {
+                    console.log("follow response", response)
+                })
+        }
+    }
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -21,18 +76,52 @@ function SearchedUser({ route, navigation }) {
         })
     })
 
+    const FollowButton = () => {
+        return (
+            <View style={Styles.FollowButton}>
+                <Text style={{ color: "white" }}>Follow</Text>
+            </View>
+        )
+    }
+
+    const UnfollowButton = () => {
+        return (
+            <View style={Styles.UnfollowButton}>
+                <Text style={{ color: "white" }}>Unfollow</Text>
+            </View>
+        )
+    }
+
+    const tapToFollow = (followButton) => {
+        if (!followButton) {
+            return (
+                FollowButton()
+            )
+        } else {
+            return (
+                UnfollowButton()
+            )
+        }
+    }
+
+    const [followButton, setFollowButton] = useState(didFollow)
+
     function FmButtons() {
         return (
             <View style={{ flexDirection: "row", flex: 1, paddingTop: 5, marginBottom: 10, margin: 3 }}>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: "center" }}>
-                    <TouchableOpacity style={{
+                    {/* <TouchableOpacity style={{
                         width: "90%", height: "100%", backgroundColor: "#4c68d7",
                         alignItems: "center", borderRadius: 5
                     }}>
-                        <Text style={{ fontSize: 16, color: "white" }}>
-                            Follow
-                        </Text>
+                       
+                    </TouchableOpacity> */}
+                    <TouchableOpacity
+                        onPress={() => { setFollowButton(!followButton); increase(); follow() }}>
+                        {tapToFollow(followButton)}
                     </TouchableOpacity>
+
+
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: "center" }}>
                     <TouchableOpacity style={{
@@ -118,7 +207,7 @@ function SearchedUser({ route, navigation }) {
                     <View style={Styles.container3}>
                         <TouchableOpacity>
                             <Text style={Styles.numberContainer}>
-                                {Object.keys(route.params.Followings).length}
+                                {followingCount}
                             </Text>
                             <Text style={Styles.text}>Following</Text>
                         </TouchableOpacity>
@@ -236,4 +325,29 @@ const Styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'space-between',
     },
+    followButton: {
+        width: 70,
+        height: 30,
+        borderColor: "white",
+        borderRadius: 1
+    },
+    FollowButton: {
+        width: 110,
+        height: 30,
+        backgroundColor: "#00ADEF",
+        borderColor: "black",
+        borderWidth: 0.5,
+        borderRadius: 6,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    UnfollowButton: {
+        width: 110,
+        height: 30,
+        borderColor: "white",
+        borderWidth: 0.5,
+        borderRadius: 6,
+        justifyContent: "center",
+        alignItems: "center"
+    }
 });

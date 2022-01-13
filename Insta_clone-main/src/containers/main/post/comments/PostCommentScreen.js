@@ -47,6 +47,8 @@ function PostCommentsScreen(props) {
             })
     }
 
+
+
     useEffect(() => {
         getComments()
     }, [])
@@ -59,12 +61,16 @@ function PostCommentsScreen(props) {
         return (
             <View style={styles.container}>
                 {
-                    emptyComments ? <View style={{ flex: 1 }}><Text style={{ color: "white" }}>No comments</Text></View> : <FlatList
-                        data={viewComments}
-                        renderItem={({ item, index }) =>
-                            <CommentView YourComments={item} postId={postId} />
-                        }
-                    />
+                    emptyComments ? <View style={{ flex: 1 }}><Text style={{ color: "white" }}>No comments</Text></View>
+                        :
+                        <FlatList
+                            extraData={viewComments}
+
+                            data={viewComments}
+                            renderItem={({ item, index }) =>
+                                <CommentView YourComments={item} postId={postId} />
+                            }
+                        />
                 }
                 <AddComments getComments={getComments} postId={postId} />
             </View>

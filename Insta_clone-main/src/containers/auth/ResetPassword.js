@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import colors from '../../res/colors';
+import CustomActivityIndicator from '../../components/CustomActivityIndicator';
 
 export default function ResetPassword({ navigation }) {
 
@@ -11,7 +12,7 @@ export default function ResetPassword({ navigation }) {
 
     const resetPasswordHandler = async () => {
         setLoading(true)
-        await fetch('http://188.166.189.237:3001/api/v1/users/forgotPassword', {
+        await fetch('http://188.166.189.237:3001/api/v1/users/resetPassword', {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -20,6 +21,7 @@ export default function ResetPassword({ navigation }) {
             body: JSON.stringify({ email, otp, newPassword })
         }).then(res => res.json())
             .then((response) => {
+                console.log("resetpassword status", response)
                 try {
                     if (response.status === "OK") {
                         setLoading(false)
@@ -36,52 +38,52 @@ export default function ResetPassword({ navigation }) {
     }
 
     if (loading) {
-        <ActivityIndicator size="small" color="white" />
+        return <CustomActivityIndicator />
+    } else {
+
+        return (
+            <View style={Styles.container}>
+                <Text style={Styles.headerText}></Text>
+                <View style={Styles.paragraphContainer}>
+                    <Text style={Styles.text}>Enter the 6-digit confirmation code that</Text>
+                    <Text style={Styles.text}>we sent to</Text>
+                    <Text style={Styles.text}>Provided Email</Text>
+                </View>
+
+                <View style={Styles.userNameContainer}>
+                    <TextInput
+                        style={Styles.userNameInput}
+                        onChangeText={(text) => setEmail(text)}
+                        placeholder="Enter your email"
+                        placeholderTextColor={colors.textFaded2}
+                    />
+                </View>
+
+                <View style={Styles.userNameContainer}>
+                    <TextInput
+                        style={Styles.userNameInput}
+                        onChangeText={(text) => setOtp(text)}
+                        placeholder="Confirmation code"
+                        placeholderTextColor={colors.textFaded2}
+                    />
+                </View>
+
+                <View style={Styles.userNameContainer}>
+                    <TextInput
+                        style={Styles.userNameInput}
+                        onChangeText={(text) => setNewPassword(text)}
+                        placeholder="Enter new password"
+                        placeholderTextColor={colors.textFaded2}
+                    />
+                </View>
+
+
+                <TouchableOpacity style={Styles.loginContainer} onPress={() => resetPasswordHandler()}>
+                    <Text style={Styles.loginText}>Next</Text>
+                </TouchableOpacity>
+            </View>
+        )
     }
-
-
-    return (
-        <View style={Styles.container}>
-            <Text style={Styles.headerText}></Text>
-            <View style={Styles.paragraphContainer}>
-                <Text style={Styles.text}>Enter the 6-digit confirmation code that</Text>
-                <Text style={Styles.text}>we sent to</Text>
-                <Text style={Styles.text}>Provided Email</Text>
-            </View>
-
-            <View style={Styles.userNameContainer}>
-                <TextInput
-                    style={Styles.userNameInput}
-                    onChangeText={(text) => setEmail(text)}
-                    placeholder="Enter your email"
-                    placeholderTextColor={colors.textFaded2}
-                />
-            </View>
-
-            <View style={Styles.userNameContainer}>
-                <TextInput
-                    style={Styles.userNameInput}
-                    onChangeText={(text) => setOtp(text)}
-                    placeholder="Confirmation code"
-                    placeholderTextColor={colors.textFaded2}
-                />
-            </View>
-
-            <View style={Styles.userNameContainer}>
-                <TextInput
-                    style={Styles.userNameInput}
-                    onChangeText={(text) => setNewPassword(text)}
-                    placeholder="Enter new password"
-                    placeholderTextColor={colors.textFaded2}
-                />
-            </View>
-
-
-            <TouchableOpacity style={Styles.loginContainer} onPress={() => resetPasswordHandler()}>
-                <Text style={Styles.loginText}>Next</Text>
-            </TouchableOpacity>
-        </View>
-    )
 }
 
 const Styles = StyleSheet.create({

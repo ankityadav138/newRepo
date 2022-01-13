@@ -36,7 +36,7 @@ export default function AddComments(props) {
                 try {
                     if (response.message === "success") {
                         setLoading(false)
-                        refreshComment
+                        refreshComment()
                         alert("Your comment successfuly posted")
                     } else {
                         setLoading(false)

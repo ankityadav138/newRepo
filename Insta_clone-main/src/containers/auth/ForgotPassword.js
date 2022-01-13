@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native'
 import colors from '../../res/colors'
 import images from '../../res/images'
+import CustomActivityIndicator from '../../components/CustomActivityIndicator'
 
 export default function ForgotPassword({ navigation }) {
 
@@ -19,6 +20,7 @@ export default function ForgotPassword({ navigation }) {
             body: JSON.stringify({ email })
         }).then(res => res.json())
             .then((response) => {
+                console.log("forgotpasswrd status", response)
                 try {
                     if (response.status === "OK") {
                         setLoading(false)
@@ -35,74 +37,75 @@ export default function ForgotPassword({ navigation }) {
     }
 
     if (loading) {
-        <ActivityIndicator size="large" color="white" />
-    }
+        return <CustomActivityIndicator />
+    } else {
 
 
-    return (
-        <View style={Styles.container}>
-            <View>
-                <Text style={Styles.headerText}>Find your account</Text>
-            </View>
+        return (
+            <View style={Styles.container}>
+                <View>
+                    <Text style={Styles.headerText}>Find your account</Text>
+                </View>
 
-            <View style={Styles.paragraphContainer}>
-                <Text>Enter your username or the email</Text>
-                <Text>address or phone number linked to</Text>
-                <Text>your accounts</Text>
-            </View>
+                <View style={Styles.paragraphContainer}>
+                    <Text>Enter your username or the email</Text>
+                    <Text>address or phone number linked to</Text>
+                    <Text>your accounts</Text>
+                </View>
 
-            <View style={Styles.userNameContainer}>
-                <TextInput
-                    style={Styles.userNameInput}
-                    onChangeText={(text) => setEmail(text)}
-                    placeholder="Phone number, username or email"
-                    placeholderTextColor={colors.textFaded2}
-                />
-            </View>
+                <View style={Styles.userNameContainer}>
+                    <TextInput
+                        style={Styles.userNameInput}
+                        onChangeText={(text) => setEmail(text)}
+                        placeholder="Phone number, username or email"
+                        placeholderTextColor={colors.textFaded2}
+                    />
+                </View>
 
-            <TouchableOpacity style={Styles.loginContainer} onPress={() => ForgotPasswordHandler()}>
-                <Text style={Styles.loginText}>Next</Text>
-            </TouchableOpacity>
+                <TouchableOpacity style={Styles.loginContainer} onPress={() => ForgotPasswordHandler()}>
+                    <Text style={Styles.loginText}>Next</Text>
+                </TouchableOpacity>
 
-            <View
-                style={{
-                    //flex: 0.1,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginTop: 30,
-                }}>
-                <View style={{ flex: 1, height: 1, backgroundColor: '#262626' }}></View>
-                <Text style={{ marginLeft: 40, marginRight: 40, color: '#969696' }}>
-                    OR
-                </Text>
                 <View
                     style={{
-                        flex: 1,
-                        height: 1,
-                        backgroundColor: '#262626',
-                    }}></View>
-            </View>
+                        //flex: 0.1,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginTop: 30,
+                    }}>
+                    <View style={{ flex: 1, height: 1, backgroundColor: '#262626' }}></View>
+                    <Text style={{ marginLeft: 40, marginRight: 40, color: '#969696' }}>
+                        OR
+                    </Text>
+                    <View
+                        style={{
+                            flex: 1,
+                            height: 1,
+                            backgroundColor: '#262626',
+                        }}></View>
+                </View>
 
-            <View
-                style={{
-                    marginTop: 40,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}>
-                <Image source={images.facebookLogo} style={{ width: 20, height: 20 }} />
-                <TouchableOpacity style={{ alignItems: 'center', marginStart: 10 }}>
-                    <Text style={{ color: '#008bef' }}>Log In With Facebook</Text>
+                <View
+                    style={{
+                        marginTop: 40,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}>
+                    <Image source={images.facebookLogo} style={{ width: 20, height: 20 }} />
+                    <TouchableOpacity style={{ alignItems: 'center', marginStart: 10 }}>
+                        <Text style={{ color: '#008bef' }}>Log In With Facebook</Text>
+                    </TouchableOpacity>
+                </View>
+
+
+                <TouchableOpacity onPress={() => navigation.navigate("SignUpScreen")}>
+                    <Text style={{ color: '#008bef', alignSelf: "center" }}>Need more help.</Text>
                 </TouchableOpacity>
             </View>
-
-
-            <TouchableOpacity onPress={() => navigation.navigate("SignUpScreen")}>
-                <Text style={{ color: '#008bef', alignSelf: "center" }}>Need more help.</Text>
-            </TouchableOpacity>
-        </View>
-    )
+        )
+    }
 }
 
 const Styles = StyleSheet.create({

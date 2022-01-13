@@ -4,31 +4,57 @@ import Post from '../post/Post'
 import colors from '../../../res/colors';
 import StoryContainer from '../story/StoryContainer';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import CustomActivityIndicator from '../../../components/CustomActivityIndicator';
 
 export default function homeScreen({ navigation }) {
   const [Data, setData] = useState([])
   const [stories, setStories] = useState([])
+  const [loading, setLoading] = useState(false)
+
   console.log("datass", Data);
 
-  const API = 'http://188.166.189.237:3001/api/v1/users/feed';
-  useEffect(() => {
-    async function getData() {
-
-      const Demo_token = await AsyncStorage.getItem('TOKEN')
-      console.log("demo Toekn", Demo_token);
-
-      const request = fetch(API, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${Demo_token}`,
+  const getData = async () => {
+    setLoading(true)
+    const token = await AsyncStorage.getItem('TOKEN')
+    await fetch("http://188.166.189.237:3001/api/v1/users/feed", {
+      method: 'GET',
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      }
+    }).then(res => res.json())
+      .then((response) => {
+        console.log("dtaaaaaaa", response)
+        try {
+          if (response.status === "OK") {
+            setData(response.data)
+            setLoading(false)
+          }
+        } catch (err) {
+          console.log(err)
         }
-      });
-      const response = await request;
-      const parsed = await response.json();
-      setData(parsed.data);
-    }
-    getData();
-  }, []);
+
+      })
+  }
+
+  // const API = 'http://188.166.189.237:3001/api/v1/users/feed';
+  // useEffect(() => {
+  //   async function getData() {
+  //     setLoading(true)
+  //     const Demo_token = await AsyncStorage.getItem('TOKEN')
+  //     console.log("demo Toekn", Demo_token);
+
+  //     const request = fetch(API, {
+  //       method: "GET",
+  //       headers: {
+  //         "Authorization": `Bearer ${Demo_token}`,
+  //       }
+  //     });
+  //     const response = await request;
+  //     const parsed = await response.json();
+  //     setData(parsed.data);
+  //   }
+  //   getData();
+  // }, []);
 
 
   const storyOnPress = () => navigation.navigate('StoryScreen');
@@ -53,15 +79,14 @@ export default function homeScreen({ navigation }) {
     getData1();
   }, []);
 
+  useEffect(() => {
+    getData()
+  }, [])
 
-  if (Data === undefined) {
+
+  if (loading) {
     return (
-      <View style={{
-        backgroundColor: "black", justifyContent: 'center',
-        alignItems: "center", flex: 1
-      }}>
-        <ActivityIndicator size="small" color="white" />
-      </View>
+      <CustomActivityIndicator />
     )
   } else {
     return (

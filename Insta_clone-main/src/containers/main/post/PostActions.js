@@ -7,8 +7,9 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function PostActions({ post }) {
   const navigation = useNavigation()
-  console.log("post in postactio", post.didlike)
+  // console.log("post in postactio", post)
   let didlike = post.didlike
+  console.log("likessss", didlike)
   const ID = post.postId
   const Api = `http://188.166.189.237:3001/api/v1/post/like/${ID}`;
 
@@ -16,18 +17,19 @@ export default function PostActions({ post }) {
 
 
   const increase = () => {
-    if (likeIcon % 2 === 1) {
-      return setCount(count - 1)
-    } else if (likeIcon % 2 === 0) {
+    if (!likeIcon) {
       return setCount(count + 1)
+    } else if (likeIcon) {
+      return setCount(count - 1)
     }
   }
 
   function tapToLike(likeIcon) {
-    if (likeIcon % 2 === 1) {
-      return (images.redHeart)
+    // console.log(likeIcon);
+    if (!likeIcon) {
+      return (images.like)
     } else {
-      return (images.like);
+      return (images.redHeart);
     }
   }
   function tapToBookmark(bookmarkIcon) {
@@ -52,7 +54,7 @@ export default function PostActions({ post }) {
       },
     }).then(res => res.json())
       .then((response) => {
-        console.log(response)
+        console.log("didlike check", response)
       })
   }
 
@@ -68,7 +70,7 @@ export default function PostActions({ post }) {
     likeCheck()
   }, [])
 
-  const [likeIcon, setLikeIcon] = React.useState(1);
+  const [likeIcon, setLikeIcon] = React.useState(post.didlike);
   const [bookmarkIcon, setBookmarkIcon] = React.useState(1);
 
   return (
@@ -78,20 +80,9 @@ export default function PostActions({ post }) {
 
         <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
 
-          {
-            didlike ?
-              <TouchableOpacity onPress={() => { setLikeIcon(likeIcon + 1); likeOnPost(); increase() }}>
-                <Image source={images.redHeart, tapToLike(likeIcon)} style={Styles.actionIcons} />
-              </TouchableOpacity>
-              :
-              <TouchableOpacity onPress={() => { setLikeIcon(likeIcon + 1); likeOnPost(); increase() }}>
-                <Image source={images.like, tapToLike(likeIcon)} style={Styles.actionIcons} />
-              </TouchableOpacity>
-          }
-
-          {/* <TouchableOpacity onPress={() => { setLikeIcon(likeIcon + 1); likeOnPost(); increase() }}>
+          <TouchableOpacity onPress={() => { setLikeIcon(!likeIcon); likeOnPost(); increase() }}>
             <Image source={tapToLike(likeIcon)} style={Styles.actionIcons} />
-          </TouchableOpacity> */}
+          </TouchableOpacity>
 
 
           <TouchableOpacity onPress={() => navigation.navigate("CommentsScreen", { post })}>

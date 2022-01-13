@@ -6,8 +6,10 @@ import CustomActivityIndicator from '../../../../../components/CustomActivityInd
 
 
 export default function AddReply(props) {
-    console.log("commentId in addrply", props)
+    // console.log("commentId in addrply", props)
     let commentId = props.commentId
+    let refreshReply = props.viewReplies
+    console.log(refreshReply)
 
 
     const [reply, setReply] = useState("")
@@ -18,7 +20,7 @@ export default function AddReply(props) {
         setLoading(true)
         const token = await AsyncStorage.getItem('TOKEN')
         if (!reply.trim()) {
-            alert("Please e")
+            alert("Please enter text to reply")
             setLoading(false)
         } else {
 
@@ -38,6 +40,7 @@ export default function AddReply(props) {
                     try {
                         if (response.message === "success") {
                             setLoading(false)
+                            refreshReply()
                             alert("replied successfully")
                         } else if (response.message === "") {
                             setLoading(false)
