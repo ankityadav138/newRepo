@@ -13,13 +13,13 @@ const data = [
 
 function SearchedUser({ route, navigation }) {
 
-    console.log("props on searched user", route.params.id)
+    console.log("props on searched user", route.params)
     let id = route.params.id
     let didFollow = route.params.didFollow
-    let followingLength = Object.keys(route.params.Followings).length
+    let followersLength = Object.keys(route.params.Followers).length
 
 
-    const [followingCount, setFollowingCount] = React.useState(followingLength)
+    const [followingCount, setFollowingCount] = React.useState(followersLength)
 
     const increase = () => {
         if (!followButton) {
@@ -199,7 +199,7 @@ function SearchedUser({ route, navigation }) {
                     <View style={Styles.container3}>
                         <TouchableOpacity>
                             <Text style={Styles.numberContainer}>
-                                {Object.keys(route.params.Followers).length}
+                                {followingCount}
                             </Text>
                             <Text style={Styles.text}>Followers</Text>
                         </TouchableOpacity>
@@ -207,7 +207,7 @@ function SearchedUser({ route, navigation }) {
                     <View style={Styles.container3}>
                         <TouchableOpacity>
                             <Text style={Styles.numberContainer}>
-                                {followingCount}
+                                {Object.keys(route.params.Followings).length}
                             </Text>
                             <Text style={Styles.text}>Following</Text>
                         </TouchableOpacity>

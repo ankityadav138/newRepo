@@ -16,6 +16,7 @@ import colors from '../../../res/colors';
 import DirectMessageScreen from '../DirectMessage/DirectMessageScreen';
 import ReplyCommentScreen from '../post/comments/ReplyCommentScreen';
 import PostCommentsScreen from '../post/comments/PostCommentScreen';
+import Message from '../DirectMessage/Message';
 
 export default function () {
   const Stack = createStackNavigator();
@@ -95,6 +96,7 @@ export default function () {
           }
         })}
       />
+      <Stack.Screen name='Message' component={Message} />
     </Stack.Navigator>
   );
 }

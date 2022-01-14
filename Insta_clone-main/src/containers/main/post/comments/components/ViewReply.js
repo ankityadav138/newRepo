@@ -3,28 +3,51 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Image } from 'r
 import user from '../../../../../res/images/user.png'
 import images from '../../../../../res/images';
 import colors from '../../../../../res/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ViewReply(props) {
-    console.log("replies in components", props.data)
+    console.log("replies in components", props)
+    let commentId = props.commentId
+    let replyId = props.data.id
+    let didLike = props.data.didLike
 
-    const [likeIcon, setLikeIcon] = React.useState(1);
+
     const [count, setCount] = useState(props.data.likes)
 
-    const changeInLike = () => {
-        if (likeIcon % 2 === 1) {
+    const increase = () => {
+        if (!likeIcon) {
             return setCount(count + 1)
-        } else if (likeIcon % 2 === 0) {
+        } else if (likeIcon) {
             return setCount(count - 1)
         }
     }
 
     function tapToLike(likeIcon) {
-        if (likeIcon % 2 === 0) {
-            return images.redHeart;
+        // console.log(likeIcon);
+        if (!likeIcon) {
+            return (images.like)
         } else {
-            return images.like;
+            return (images.redHeart);
         }
     }
+
+    const changeInLike = async () => {
+        const token = await AsyncStorage.getItem("TOKEN")
+
+        await fetch(`http://188.166.189.237:3001/api/v1/comment/reply/like/${commentId}/${replyId}`, {
+            method: "PATCH",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        }).then(res => res.json())
+            .then((response) => {
+                console.log("like on reply response", response)
+            })
+    }
+
+    const [likeIcon, setLikeIcon] = React.useState(didLike);
 
     return (
         <SafeAreaView style={styles.container2}>
@@ -43,7 +66,7 @@ export default function ViewReply(props) {
                     </Text>
                 </View>
 
-                <TouchableOpacity style={{ top: 30, right: 10, }} onPress={() => { setLikeIcon(likeIcon + 1); changeInLike() }}>
+                <TouchableOpacity style={{ top: 30, right: 10, }} onPress={() => { setLikeIcon(!likeIcon); changeInLike(); increase() }}>
                     <Image source={tapToLike(likeIcon)} style={styles.actionIcons} />
                 </TouchableOpacity>
             </View>

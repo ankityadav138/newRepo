@@ -8,38 +8,43 @@ import { useNavigation } from '@react-navigation/native';
 
 
 
-export default function CommentView(item) {
+export default function CommentView({ item }) {
+    console.log("itemmmm", item)
 
-    let postId = item.postId
-    console.log("postid checking", postId)
+    // // let postId = item.postId
+    let didLike = item.didLike
+    let id = item.id
+    console.log("checking props in comment view...", didLike)
 
 
     const navigation = useNavigation()
-    const [count, setCount] = useState(item.YourComments.like)
-    const [replyCount, setReplyCount] = useState(item.YourComments.reply)
-    console.log(item.YourComments.id)
+    const [count, setCount] = useState(item.like)
+    const [replyCount, setReplyCount] = useState(item.reply)
+    console.log(item.id)
 
 
 
 
-    const changeInLike = () => {
-        if (likeIcon % 2 === 1) {
+
+    const increase = () => {
+        if (!likeIcon) {
             return setCount(count + 1)
-        } else if (likeIcon % 2 === 0) {
+        } else if (likeIcon) {
             return setCount(count - 1)
         }
     }
 
     function tapToLike(likeIcon) {
-        if (likeIcon % 2 === 0) {
-            return images.redHeart;
+        // console.log(likeIcon);
+        if (!likeIcon) {
+            return (images.like)
         } else {
-            return images.like;
+            return (images.redHeart);
         }
     }
 
     const likesOnComment = async () => {
-        let id = item.YourComments.id
+
         const token = await AsyncStorage.getItem('TOKEN')
         await fetch(`http://188.166.189.237:3001/api/v1/comment/like/${id}`, {
             method: "PATCH",
@@ -55,24 +60,24 @@ export default function CommentView(item) {
     }
 
 
-    const deleteComment = async () => {
-        let id = item.YourComments.id
-        let postId = item.postId
-        const token = await AsyncStorage.getItem('TOKEN')
-        await fetch(`http://188.166.189.237:3001/api/v1/comment/`, {
-            method: "DELETE",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-        }).then(res => res.json())
-            .then((response) => {
-                console.log(response)
-            })
-    }
+    // const deleteComment = async () => {
+    //     let id = item.YourComments.id
+    //     let postId = item.postId
+    //     const token = await AsyncStorage.getItem('TOKEN')
+    //     await fetch(`http://188.166.189.237:3001/api/v1/comment/`, {
+    //         method: "DELETE",
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${token}`
+    //         },
+    //     }).then(res => res.json())
+    //         .then((response) => {
+    //             console.log(response)
+    //         })
+    // }
 
-    const [likeIcon, setLikeIcon] = React.useState(1);
+    const [likeIcon, setLikeIcon] = React.useState(didLike);
 
     return (
         <SafeAreaView style={styles.container2}>
@@ -85,12 +90,12 @@ export default function CommentView(item) {
                 <View style={styles.commentSection}>
                     <Text style={{ color: "white" }}>
                         <Text style={styles.userName}>
-                            {item.YourComments.username} {' '}
-                        </Text>{item.YourComments.comment}
+                            {item.username} {' '}
+                        </Text>{item.comment}
                     </Text>
                 </View>
 
-                <TouchableOpacity style={{ top: 30, right: 10, }} onPress={() => { setLikeIcon(likeIcon + 1); likesOnComment(); changeInLike() }}>
+                <TouchableOpacity style={{ top: 30, right: 10, }} onPress={() => { setLikeIcon(!likeIcon); likesOnComment(); increase() }}>
                     <Image source={tapToLike(likeIcon)} style={styles.actionIcons} />
                 </TouchableOpacity>
             </View>
@@ -102,9 +107,9 @@ export default function CommentView(item) {
                     <Text style={styles.greyText}>Reply</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => deleteComment()}>
+                {/* <TouchableOpacity onPress={() => deleteComment()}>
                     <Text style={styles.greyText}>Delete</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
 
 

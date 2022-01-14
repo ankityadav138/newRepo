@@ -27,6 +27,7 @@ export default function homeScreen({ navigation }) {
         try {
           if (response.status === "OK") {
             setData(response.data)
+
             setLoading(false)
           }
         } catch (err) {
@@ -81,6 +82,10 @@ export default function homeScreen({ navigation }) {
 
   useEffect(() => {
     getData()
+    const willFocusSubscription = navigation.addListener('focus', () => {
+      getData();
+    });
+    return willFocusSubscription;
   }, [])
 
 
@@ -98,7 +103,7 @@ export default function homeScreen({ navigation }) {
         )}
         keyExtractor={item => item.postId}
         renderItem={({ item, index }) => (
-          <Post data={item} />
+          <Post getData={getData} data={item} />
         )}
       />
     );

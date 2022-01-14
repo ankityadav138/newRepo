@@ -14,11 +14,13 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import BottomContent from './profileBottomMenu/BottomContent';
 import { useNavigation } from '@react-navigation/native';
+import CustomActivityIndicator from '../../../components/CustomActivityIndicator';
 
 const data = [{ "key": "1" }];
 
-export default function profileScreen() {
+export default function profileScreen(props) {
   const [Data, setData] = useState([]);
+  const [loading, setLoading] = useState(false)
   const navigation = useNavigation();
 
   const bs = React.createRef();
@@ -33,33 +35,58 @@ export default function profileScreen() {
   );
 
 
+  const getData = async () => {
+    setLoading(true)
+    const token = await AsyncStorage.getItem('TOKEN')
+    await fetch('http://188.166.189.237:3001/api/v1/users/me', {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      }
+    }).then(res => res.json())
+      .then((response) => {
+
+        console.log(response)
+        try {
+          if (response.status === "OK") {
+            setData(response.data)
+            setLoading(false)
+          }
+        } catch (error) {
+
+        }
+      })
+  }
+
+
+
   const API = 'http://188.166.189.237:3001/api/v1/users/me';
   useEffect(() => {
-    async function getData() {
-
-      const Demo_token = await AsyncStorage.getItem('TOKEN')
-
-      const request = fetch(API, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${Demo_token}`,
-        }
-      });
-      const response = await request;
-      const parsed = await response.json();
-      setData(parsed.data);
-    }
     getData();
+    const willFocusSubscription = props.navigation.addListener('focus', () => {
+      getData();
+    });
+
+    // async function getData() {
+
+    //   const Demo_token = await AsyncStorage.getItem('TOKEN')
+
+    //   const request = fetch(API, {
+    //     method: "GET",
+    //     headers: {
+    //       "Authorization": `Bearer ${Demo_token}`,
+    //     }
+    //   });
+    //   const response = await request;
+    //   const parsed = await response.json();
+    //   setData(parsed.data);
+    // }
+    return willFocusSubscription;
   }, []);
 
-  if (Data === [] || undefined) {
+  if (loading) {
     return (
-      <View style={{
-        backgroundColor: "black", justifyContent: 'center',
-        alignItems: "center", flex: 1
-      }}>
-        <ActivityIndicator size="small" color="white" />
-      </View>
+      <CustomActivityIndicator />
     )
   } else {
     return (

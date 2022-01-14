@@ -8,8 +8,9 @@ import user from '../../../../res/images/user.png'
 import AddReply from './components/AddReply'
 
 export default function ReplyCommentScreen(props) {
-    let comment = props.route.params.item.YourComments
-    let commentId = props.route.params.item.YourComments.id
+    console.log(props)
+    let comment = props.route.params.item
+    let commentId = props.route.params.item.id
 
     const [reply, setReply] = useState("")
     const [allReply, setAllReply] = useState()
@@ -17,24 +18,24 @@ export default function ReplyCommentScreen(props) {
     const [emptyReplies, setEmptyReplies] = useState(false)
     const [postButton, setPostButton] = useState(true)
 
-    // const replyOnComment = async () => {
+    const replyOnComment = async () => {
 
-    //     const token = await AsyncStorage.getItem('TOKEN')
-    //     await fetch(`http://188.166.189.237:3001/api/v1/comment/reply/${commentId}`, {
-    //         method: "POST",
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Bearer ${token}`
-    //         },
-    //         body: JSON.stringify({
-    //             reply
-    //         })
-    //     }).then(res => res.json())
-    //         .then((response) => {
-    //             console.log(response)
-    //         })
-    // }
+        const token = await AsyncStorage.getItem('TOKEN')
+        await fetch(`http://188.166.189.237:3001/api/v1/comment/reply/${commentId}`, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                reply
+            })
+        }).then(res => res.json())
+            .then((response) => {
+                console.log(response)
+            })
+    }
 
     const viewReplies = async () => {
         setLoading(true)
@@ -99,7 +100,7 @@ export default function ReplyCommentScreen(props) {
                             data={allReply}
                             renderItem={({ item, index }) =>
                                 <View>
-                                    <ViewReply data={item} />
+                                    <ViewReply commentId={commentId} data={item} />
                                 </View>
                             }
                         />

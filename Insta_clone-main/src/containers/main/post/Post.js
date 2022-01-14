@@ -7,7 +7,9 @@ import PostText from './PostText';
 import PostComments from './PostComments';
 import PostPublishDate from './PostPublishDate';
 
-export default function Post({data}) {
+export default function Post({ data, getData }) {
+  console.log("checking feedapi get data ", getData)
+
 
   // if (data === undefined) {
   //   return (
@@ -21,12 +23,12 @@ export default function Post({data}) {
   // } else {
   return (
     <React.Fragment>
-      <PostHeader/>
+      <PostHeader />
       <PostImage post={data} />
-      <PostActions post={data} />
+      <PostActions getData={getData} post={data} />
       {/* <PostLikes post={data} /> */}
       <PostText post={data} />
-      <PostComments post={data} />
+      <PostComments getData={getData} post={data} />
       <PostPublishDate post={data} />
     </React.Fragment>
   );

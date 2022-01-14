@@ -1,12 +1,18 @@
 import React from 'react';
-import {View, Image, Text} from 'react-native';
+import { View, Image, Text } from 'react-native';
 import colors from '../../../res/colors';
 import images from '../../../res/images';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
+import Message from './Message';
 
-export default function MessageListItem({data}) {
+export default function MessageListItem({ data }) {
+
+  const navigation = useNavigation()
+
+
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.navigate("Message", data)}>
       <View
         style={{
           flexDirection: 'row',
@@ -15,22 +21,22 @@ export default function MessageListItem({data}) {
           marginEnd: 10,
           marginTop: 15,
         }}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <Image
-            source={{uri: 'https://picsum.photos/600'}}
-            style={{width: 60, height: 60, borderRadius: 70}}
+            source={{ uri: 'https://picsum.photos/600' }}
+            style={{ width: 60, height: 60, borderRadius: 70 }}
           />
-          <View style={{flexDirection: 'column', marginStart: 15}}>
-            <Text style={{color: 'white', fontWeight: 'bold'}}>
+          <View style={{ flexDirection: 'column', marginStart: 15 }}>
+            <Text style={{ color: 'white', fontWeight: 'bold' }}>
               {data.name}
             </Text>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text style={{color: colors.textFaded2}}>{data.message}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={{ color: colors.textFaded2 }}>{data.message}</Text>
               <Image
                 source={images.dot}
-                style={{width: 3, height: 3, marginStart: 5}}
+                style={{ width: 3, height: 3, marginStart: 5 }}
               />
-              <Text style={{color: colors.textFaded2, marginStart: 5}}>2h</Text>
+              <Text style={{ color: colors.textFaded2, marginStart: 5 }}>2h</Text>
             </View>
           </View>
         </View>
@@ -39,7 +45,7 @@ export default function MessageListItem({data}) {
           <View>
             <Image
               source={images.photo_camera}
-              style={{width: 25, height: 25}}
+              style={{ width: 25, height: 25 }}
             />
           </View>
         </TouchableOpacity>

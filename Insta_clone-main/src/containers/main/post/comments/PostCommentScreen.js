@@ -9,6 +9,8 @@ import AddComments from './components/AddComments'
 import CommentView from './components/CommentView';
 
 function PostCommentsScreen(props) {
+    console.log("checking getdata in postcommentscreen", props.route.params.getData)
+    let refreshData = props.route.params.getData
 
     let postId = props.route.params.post.postId
 
@@ -29,13 +31,15 @@ function PostCommentsScreen(props) {
             },
         }).then(res => res.json())
             .then((response) => {
-                console.log(response)
+                console.log("comments...", response)
                 try {
                     if (response.message === "Successful") {
                         setLoading(false)
                         let commentInarray = response.data
-                        console.log(response.data)
+
+                        // console.log(response.data)
                         setViewComments(commentInarray)
+                        refreshData()
                     } else if (response.message === "No comments") {
                         setLoading(false)
                         setEmptyComments(true)
@@ -68,7 +72,7 @@ function PostCommentsScreen(props) {
 
                             data={viewComments}
                             renderItem={({ item, index }) =>
-                                <CommentView YourComments={item} postId={postId} />
+                                <CommentView item={item} postId={postId} />
                             }
                         />
                 }

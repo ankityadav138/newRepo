@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import PostLikes from './PostLikes';
 import { useNavigation } from '@react-navigation/native';
 
-export default function PostActions({ post }) {
+export default function PostActions({ post, getData }) {
   const navigation = useNavigation()
   // console.log("post in postactio", post)
   let didlike = post.didlike
@@ -58,17 +58,6 @@ export default function PostActions({ post }) {
       })
   }
 
-  const likeCheck = () => {
-    if (didlike === true) {
-      return images.redHeart
-    } else {
-      return images.like
-    }
-  }
-
-  useEffect(() => {
-    likeCheck()
-  }, [])
 
   const [likeIcon, setLikeIcon] = React.useState(post.didlike);
   const [bookmarkIcon, setBookmarkIcon] = React.useState(1);
@@ -85,7 +74,7 @@ export default function PostActions({ post }) {
           </TouchableOpacity>
 
 
-          <TouchableOpacity onPress={() => navigation.navigate("CommentsScreen", { post })}>
+          <TouchableOpacity onPress={() => navigation.navigate("CommentsScreen", { post, getData })}>
             <Image source={images.comment} style={Styles.actionIcons} />
           </TouchableOpacity>
 

@@ -6,33 +6,40 @@ import colors from '../../../res/colors';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function searchScreen() {
+export default function searchScreen(props) {
   const [text, setText] = useState('');
   const [dataSource, setDataSource] = useState([]);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    async function getData() {
-      const api = 'http://188.166.189.237:3001/api/v1/profile/';
-      const token = await AsyncStorage.getItem("TOKEN")
-      await fetch(api + text, {
-        method: "GET",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+  async function getData() {
+    const api = 'http://188.166.189.237:3001/api/v1/profile/';
+    const token = await AsyncStorage.getItem("TOKEN")
+    await fetch(api + text, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        setDataSource(responseJson.data)
+        // console.log("Search Data", responseJson);
       })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          setDataSource(responseJson.data)
-          // console.log("Search Data", responseJson);
-        })
-        .catch((error) => {
-          console.log("Seach error", error);
-        })
-    };
+      .catch((error) => {
+        console.log("Seach error", error);
+      })
+  };
+
+
+  useEffect(() => {
     getData();
+    const willFocusSubscription = props.navigation.addListener('focus', () => {
+      getData();
+    });
+
+
   }, [text]);
 
   return (
